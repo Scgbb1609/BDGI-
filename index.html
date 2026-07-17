@@ -1,12 +1,130 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BDGI</title>
+    <title>Descubra sua Inicial</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f7f9fc;
+            padding: 50px;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            max-width: 400px;
+            width: 100%;
+        }
+        input, select, button {
+            padding: 12px;
+            font-size: 16px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #resultado {
+            margin-top: 25px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            line-height: 1.5;
+        }
+    </style>
 </head>
 <body>
-    
+
+    <div class="container">
+        <h1>O que tem a sua letra? ✨</h1>
+        <p>Digite seu nome e escolha uma categoria:</p>
+       
+        <!-- Campo para o nome -->
+        <input type="text" id="nomeInput" placeholder="Digite seu nome aqui...">
+       
+        <!-- Menu de seleção (Dropdown) -->
+        <select id="categoriaSelect">
+            <option value="animais">🦁 Animais</option>
+            <option value="frutas">🍎 Frutas</option>
+            <option value="flores">🌻 Flores</option>
+        </select>
+
+        <button onclick="descobrir()">Descobrir</button>
+
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        // Listas de A a Z para cada categoria
+        const dados = {
+            animais: {
+                'A': 'Abelha 🐝', 'B': 'Borboleta 🦋', 'C': 'Cachorro 🐶', 'D': 'Dinossauro 🦖', 'E': 'Elefante 🐘',
+                'F': 'Formiga 🐜', 'G': 'Gato 🐱', 'H': 'Hipopótamo 🦛', 'I': 'Iguana 🦎', 'J': 'Jacaré 🐊',
+                'K': 'Kiwi 🥝', 'L': 'Leão 🦁', 'M': 'Macaco 🐵', 'N': 'Naja 🐍', 'O': 'Ovelha 🐑',
+                'P': 'Panda 🐼', 'Q': 'Quati 🦝', 'R': 'Rato 🐭', 'S': 'Sapo 🐸', 'T': 'Tigre 🐯',
+                'U': 'Urso 🐻', 'V': 'Vaca 🐮', 'W': 'Wombat 🐨', 'X': 'Xexéu 🐦', 'Y': 'Yorkshire 🐶', 'Z': 'Zebra 🦓'
+            },
+            frutas: {
+                'A': 'Abacaxi 🍍', 'B': 'Banana 🍌', 'C': 'Caju 🥥', 'D': 'Damasco 🍑', 'E': 'Embaúba 🌳',
+                'F': 'Figo 🍇', 'G': 'Goiaba 🍏', 'H': 'Hortelã (bônus!) 🌿', 'I': 'Ingá 🍃', 'J': 'Jaca 🍈',
+                'K': 'Kiwi 🥝', 'L': 'Laranja 🍊', 'M': 'Melancia 🍉', 'N': 'Nectarina 🍑', 'O': 'Morango (Opa, Orvalha!) 🍓',
+                'P': 'Pêra 🍐', 'Q': 'Quino 🍅', 'R': 'Romã 🍎', 'S': 'Seriguela 🍒', 'T': 'Tangerina 🍊',
+                'U': 'Uva 🍇', 'V': 'Veludo 🍇', 'W': 'Wampi 🍋', 'X': 'Xixá 🥜', 'Y': 'Yuzu 🍋', 'Z': 'Zimbro 🫐'
+            },
+            flores: {
+                'A': 'Azaleia 🌺', 'B': 'Brinco-de-Princesa 🌷', 'C': 'Camélia 🌹', 'D': 'Dália 🌸', 'E': 'Estrelícia 🪻',
+                'F': 'Frésia 💐', 'G': 'Girassol 🌻', 'H': 'Hortênsia 🪻', 'I': 'Íris 🪻', 'J': 'Jasmim 💮',
+                'K': 'Kalanchoe 🌱', 'L': 'Lírio 🪷', 'M': 'Margarida 🌼', 'N': 'Narciso 🌼', 'O': 'Orquídea 🪻',
+                'P': 'Prímula 🌸', 'Q': 'Quaresmeira 💜', 'R': 'Rosa 🌹', 'S': 'Sinfonia 🌺', 'T': 'Tulipa 🌷',
+                'U': 'Uva-de-Urso 🌿', 'V': 'Violeta 🪻', 'W': 'Wisteria 🍇', 'X': 'Xaxim 🌿', 'Y': 'Ypê 💛', 'Z': 'Zínia 🌸'
+            }
+        };
+
+        function descobrir() {
+            const nome = document.getElementById('nomeInput').value.trim();
+            const categoria = document.getElementById('categoriaSelect').value;
+            const resultadoDiv = document.getElementById('resultado');
+
+            // Validação simples para o nome não ir vazio
+            if (nome === "") {
+                resultadoDiv.innerText = "Por favor, digite seu nome primeiro! 🧐";
+                return;
+            }
+
+            // Pega a primeira letra e põe em maiúscula
+            const primeiraLetra = nome.charAt(0).toUpperCase();
+
+            // Busca na categoria selecionada (animais, frutas ou flores)
+            const itemEncontrado = dados[categoria][primeiraLetra];
+
+            // Traduz o nome da categoria para exibir no texto final
+            const nomesCategoria = { animais: 'animal', frutas: 'fruta', flores: 'flor' };
+            const tipoTexto = nomesCategoria[categoria];
+
+            if (itemEncontrado) {
+                resultadoDiv.innerHTML = `Olá, ${nome}!<br>O seu/sua <strong>${tipoTexto}</strong> da letra "${primeiraLetra}" é: <br><span style="font-size: 24px;">${itemEncontrado}</span>`;
+            } else {
+                resultadoDiv.innerText = `Legal, ${nome}! Não encontrei nenhum(a) ${tipoTexto} comum com a letra "${primeiraLetra}". 😢`;
+            }
+        }
+    </script>
+
 </body>
 </html>
 <body>
